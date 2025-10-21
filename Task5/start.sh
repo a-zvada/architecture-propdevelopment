@@ -1,6 +1,13 @@
+#!/bin/bash
+
+# Применение сетевых политик
 kubectl apply -f network-policies.yaml
 
-kubectl run front-end-app --image=nginx --labels role=front-end --expose --port 443
-kubectl run back-end-app --image=nginx --labels role=back-end-api --expose --port 8443
-kubectl run admin-front-end-app --image=nginx --labels role=admin-front-end --expose --port 443 
-kubectl run admin-back-end-app --image=nginx --labels role=admin-back-end-api --expose --port 8443 
+# Создание namespace crm, если он не существует
+kubectl create namespace crm --dry-run=client -o yaml | kubectl apply -f -
+
+# Запуск подов
+kubectl run front-end-pod --image=nginx --labels app=front-end --port=443 --namespace=crm --expose --restart=Never
+kubectl run back-end-api-pod --image=nginx --labels app=back-end-api --port=443 --namespace=crm --expose --restart=Never
+kubectl run admin-front-end-pod --image=nginx --labels app=admin-front-end --port=443 --namespace=crm --expose --restart=Never
+kubectl run admin-back-end-api-pod --image=nginx --labels app=admin-back-end-api --port=443 --namespace=crm --expose --restart=Never
