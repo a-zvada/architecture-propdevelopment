@@ -1,0 +1,91 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: front-end-policy
+  namespace: crm
+spec:
+  podSelector:
+    matchLabels:
+      app: front-end
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: back-end-api
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: back-end-api
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: back-end-api-policy
+  namespace: crm
+spec:
+  podSelector:
+    matchLabels:
+      app: back-end-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: front-end
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: front-end
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: admin-front-end-policy
+  namespace: crm
+spec:
+  podSelector:
+    matchLabels:
+      app: admin-front-end
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: admin-back-end-api
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: admin-back-end-api
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: admin-back-end-api-policy
+  namespace: crm
+spec:
+  podSelector:
+    matchLabels:
+      app: admin-back-end-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: admin-front-end
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: admin-front-end
